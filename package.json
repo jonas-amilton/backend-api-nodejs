@@ -1,0 +1,14 @@
+{
+    "name": "backend-api-nodejs",
+    "version": "1.0.0",
+    "description": "A simple backend API built with Node.js",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "node --watch --no-warnings server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}
