@@ -2,16 +2,27 @@
     "name": "backend-api-nodejs",
     "version": "1.0.0",
     "description": "A simple backend API built with Node.js",
+    "type": "module",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "node --watch --no-warnings server.js"
+        "dev": "node --watch --no-warnings server.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
         "fastify": "^5.12.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.9.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.6",
+        "globals": "^17.11.0",
+        "prettier": "^3.9.6"
     }
 }
