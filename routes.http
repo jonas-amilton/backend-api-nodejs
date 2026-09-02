@@ -13,7 +13,7 @@ Content-Type: application/json
 ###
 
 // LIST VIDEOS
-GET http://localhost:3333/videos
+GET http://localhost:3333/videos?search=node
 
 ###
 
