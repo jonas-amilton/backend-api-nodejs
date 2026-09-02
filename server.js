@@ -1,13 +1,62 @@
-import { createServer } from 'node:http'
+import { fastify } from 'fastify'
+import { DatabaseMemory } from './database-memory.js'
 
-const server = createServer((req, res) => {
-    console.log('Request received:', req.method, req.url);
+const server = fastify()
 
-    res.write('Hello, World! This is a simple Node.js server.\n');
+const database = new DatabaseMemory()
 
-    return res.end('Finally, the server is running!');
+server.get('/', () => {
+  return 'Index page'
 })
 
-server.listen(3333, () => {
-    console.log('Server is listening on port 3333');
+server.get('/health', () => {
+  return { status: 'ok' }
+})
+
+server.post('/videos', (request, reply) => {
+  const { title, description, duration } = request.body
+
+  const video = database.create({
+    title,
+    description,
+    duration,
+  })
+
+  return reply.status(201).send(video)
+})
+
+server.get('/videos', (request, reply) => {
+  const videos = database.list()
+
+  return reply.status(200).send(videos)
+})
+
+server.put('/videos/:id', (request, reply) => {
+  const { id } = request.params
+  const { title, description, duration } = request.body
+
+  database.update(id, {
+    title,
+    description,
+    duration,
+  })
+
+  return reply.status(204).send()
+})
+
+server.delete('/videos/:id', (request, reply) => {
+  const { id } = request.params
+
+  database.delete(id)
+
+  return reply.status(204).send()
+})
+
+server.listen({ port: 3333 }, (err, address) => {
+  if (err) {
+    console.error(err)
+    process.exit(1)
+  }
+
+  console.log(`Server listening at ${address}`)
 })

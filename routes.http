@@ -1,0 +1,34 @@
+// install extension:REST CLIENT
+
+// CREATE VIDEO
+POST http://localhost:3333/videos
+Content-Type: application/json
+
+{
+    "title": "Video title",
+    "description": "Video description",
+    "duration": 120
+}
+
+###
+
+// LIST VIDEOS
+GET http://localhost:3333/videos
+
+###
+
+// UPDATE VIDEO
+PUT http://localhost:3333/videos/8c95723b-b215-45fe-b360-01bdb1e85316
+Content-Type: application/json
+
+{
+    "title": "Updated video title",
+    "description": "Updated video description",
+    "duration": 150
+}
+
+###
+
+// DELETE VIDEO
+
+DELETE http://localhost:3333/videos/5f60d29b-644a-45ea-9830-2cfb7354c8d2
