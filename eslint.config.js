@@ -4,6 +4,9 @@ import prettierPlugin from 'eslint-plugin-prettier'
 import prettierConfig from 'eslint-config-prettier'
 
 export default [
+  {
+    ignores: ['node_modules/**', 'prisma/migrations/**'],
+  },
   js.configs.recommended,
   {
     languageOptions: {
