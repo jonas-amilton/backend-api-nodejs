@@ -1,5 +1,9 @@
 import { PrismaVideosRepository } from '../repositories/prisma-videos-repository'
 import { FastifyRequest, FastifyReply } from 'fastify'
+import { CreateVideoUseCase } from '../use-cases/create-video'
+// TODO: criar // import { ListVideosUseCase } from '../use-cases/list-videos'
+// TODO: criar // import { UpdateVideoUseCase } from '../use-cases/update-video'
+// TODO: criar // import { DeleteVideoUseCase } from '../use-cases/delete-video'
 
 interface VideoBody {
   title: string
@@ -23,8 +27,10 @@ export class VideosController {
     reply: FastifyReply,
   ) {
     const { title, description, duration } = request.body
+    const videosRepository = new PrismaVideosRepository()
+    const createVideoUseCase = new CreateVideoUseCase(videosRepository)
 
-    await videosRepository.create({
+    await createVideoUseCase.execute({
       title,
       description,
       duration,
@@ -38,7 +44,7 @@ export class VideosController {
     reply: FastifyReply,
   ) {
     const { search } = request.query
-
+    // TODO: refatorar com usecase
     const videos = await videosRepository.list(search)
 
     return reply.status(200).send(videos)
@@ -50,7 +56,7 @@ export class VideosController {
   ) {
     const { id } = request.params
     const { title, description, duration } = request.body
-
+    // TODO: refatorar com usecase
     await videosRepository.update(id, {
       title,
       description,
@@ -65,7 +71,7 @@ export class VideosController {
     reply: FastifyReply,
   ) {
     const { id } = request.params
-
+    // TODO: refatorar com usecase
     await videosRepository.delete(id)
 
     return reply.status(204).send()
