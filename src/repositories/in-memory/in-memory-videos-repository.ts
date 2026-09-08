@@ -25,6 +25,12 @@ export class InMemoryVideosRepository implements VideosRepository {
     return video ?? null
   }
 
+  async findById(id: string): Promise<Video | null> {
+    const video = this.items.find((i) => i.id === id)
+
+    return video ?? null
+  }
+
   async list(search?: string): Promise<Video[]> {
     if (search) {
       return this.items.filter((i) =>
@@ -36,7 +42,14 @@ export class InMemoryVideosRepository implements VideosRepository {
   }
 
   async update(id: string, data: UpdateVideoDTO): Promise<void> {
-    //
+    const { title, description, duration } = data
+    const video = this.items.find((i) => i.id === id)
+
+    if (video) {
+      video.title = title ?? ''
+      video.description = description ?? ''
+      video.duration = duration ?? 0
+    }
   }
 
   async delete(id: string): Promise<void> {

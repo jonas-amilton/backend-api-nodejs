@@ -8,4 +8,5 @@ export interface VideosRepository {
   list(search?: string): Promise<Video[]>
   update(id: string, data: UpdateVideoDTO): Promise<void>
   delete(id: string): Promise<void>
+  findById(id: string): Promise<Video | null>
 }

@@ -30,6 +30,16 @@ export class PrismaVideosRepository implements VideosRepository {
     return video
   }
 
+  async findById(id: string): Promise<Video | null> {
+    const video = await prisma.video.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    return video
+  }
+
   async list(search?: string): Promise<Video[]> {
     return await prisma.video.findMany({
       where: search

@@ -1,8 +1,8 @@
 import { PrismaVideosRepository } from '../repositories/prisma-videos-repository'
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { CreateVideoUseCase } from '../use-cases/create-video'
+import { UpdateVideoUseCase } from '../use-cases/update-video'
 // TODO: criar // import { ListVideosUseCase } from '../use-cases/list-videos'
-// TODO: criar // import { UpdateVideoUseCase } from '../use-cases/update-video'
 // TODO: criar // import { DeleteVideoUseCase } from '../use-cases/delete-video'
 
 interface VideoBody {
@@ -56,8 +56,9 @@ export class VideosController {
   ) {
     const { id } = request.params
     const { title, description, duration } = request.body
-    // TODO: refatorar com usecase
-    await videosRepository.update(id, {
+    const updateVideoUseCase = new UpdateVideoUseCase(videosRepository)
+
+    await updateVideoUseCase.execute(id, {
       title,
       description,
       duration,
