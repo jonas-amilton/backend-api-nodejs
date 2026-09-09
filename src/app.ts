@@ -1,6 +1,6 @@
 import fastify, { FastifyError } from 'fastify'
 import cors from '@fastify/cors'
-import { videoRoutes } from './routes/videos.routes'
+import { videoRoutes } from './http/routes/videos.routes'
 
 export const app = fastify({
   logger: process.env.NODE_ENV !== 'test',
