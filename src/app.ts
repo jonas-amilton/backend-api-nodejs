@@ -1,6 +1,8 @@
 import fastify, { FastifyError } from 'fastify'
 import cors from '@fastify/cors'
 import { videoRoutes } from './http/routes/videos.routes'
+import { ResourceNotFoundError } from './errors/resource-not-found-error'
+import { ZodError } from 'zod'
 
 export const app = fastify({
   logger: process.env.NODE_ENV !== 'test',
@@ -21,6 +23,17 @@ app.get('/health', async () => {
 app.register(videoRoutes, { prefix: '/api/v1' })
 
 app.setErrorHandler((error: FastifyError, _request, reply) => {
+  if (error instanceof ZodError) {
+    return reply.status(400).send({
+      message: 'Validation error.',
+      issues: error.issues,
+    })
+  }
+
+  if (error instanceof ResourceNotFoundError) {
+    return reply.status(404).send({ message: error.message })
+  }
+
   if (process.env.NODE_ENV !== 'production') {
     console.error(error)
   }
