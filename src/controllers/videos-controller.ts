@@ -2,8 +2,8 @@ import { PrismaVideosRepository } from '../repositories/prisma-videos-repository
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { CreateVideoUseCase } from '../use-cases/create-video'
 import { UpdateVideoUseCase } from '../use-cases/update-video'
+import { DeleteVideoUseCase } from '../use-cases/delete-video'
 // TODO: criar // import { ListVideosUseCase } from '../use-cases/list-videos'
-// TODO: criar // import { DeleteVideoUseCase } from '../use-cases/delete-video'
 
 interface VideoBody {
   title: string
@@ -22,13 +22,18 @@ interface VideoQuery {
 const videosRepository = new PrismaVideosRepository()
 
 export class VideosController {
+  private videosRepository
+
+  constructor() {
+    this.videosRepository = new PrismaVideosRepository()
+  }
+
   async create(
     request: FastifyRequest<{ Body: VideoBody }>,
     reply: FastifyReply,
   ) {
     const { title, description, duration } = request.body
-    const videosRepository = new PrismaVideosRepository()
-    const createVideoUseCase = new CreateVideoUseCase(videosRepository)
+    const createVideoUseCase = new CreateVideoUseCase(this.videosRepository)
 
     await createVideoUseCase.execute({
       title,
@@ -56,7 +61,7 @@ export class VideosController {
   ) {
     const { id } = request.params
     const { title, description, duration } = request.body
-    const updateVideoUseCase = new UpdateVideoUseCase(videosRepository)
+    const updateVideoUseCase = new UpdateVideoUseCase(this.videosRepository)
 
     await updateVideoUseCase.execute(id, {
       title,
@@ -72,8 +77,9 @@ export class VideosController {
     reply: FastifyReply,
   ) {
     const { id } = request.params
-    // TODO: refatorar com usecase
-    await videosRepository.delete(id)
+    const deleteVideoUseCase = new DeleteVideoUseCase(this.videosRepository)
+
+    await deleteVideoUseCase.execute(id)
 
     return reply.status(204).send()
   }

@@ -53,6 +53,10 @@ export class InMemoryVideosRepository implements VideosRepository {
   }
 
   async delete(id: string): Promise<void> {
-    //
+    const indexVideo = this.items.findIndex((i) => i.id === id)
+
+    if (indexVideo === -1) {
+      this.items.splice(indexVideo, 1)
+    }
   }
 }
