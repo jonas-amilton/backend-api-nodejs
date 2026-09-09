@@ -1,9 +1,9 @@
-import { prisma } from '../lib/prisma'
+import { prisma } from '../../lib/prisma'
 import { randomUUID } from 'node:crypto'
-import { VideosRepository } from '../repositories/interface/videos-repository'
-import { Video } from '../domain/entities/video'
-import { CreateVideoDTO } from '../dtos/create-video-dto'
-import { UpdateVideoDTO } from '../dtos/update-video-dto'
+import { VideosRepository } from '../../repositories/interface/videos-repository'
+import { Video } from '../../domain/entities/video'
+import { CreateVideoDTO } from '../../dtos/create-video-dto'
+import { UpdateVideoDTO } from '../../dtos/update-video-dto'
 
 export class PrismaVideosRepository implements VideosRepository {
   async create(data: CreateVideoDTO): Promise<void> {
