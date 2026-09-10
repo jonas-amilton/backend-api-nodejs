@@ -3,6 +3,7 @@ import cors from '@fastify/cors'
 import { videoRoutes } from './http/routes/videos.routes'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { ZodError } from 'zod'
+import fastifyJwt from '@fastify/jwt'
 
 export const app = fastify({
   logger: process.env.NODE_ENV !== 'test',
@@ -10,6 +11,13 @@ export const app = fastify({
 
 app.register(cors, {
   origin: true,
+})
+
+app.register(fastifyJwt, {
+  secret: process.env.JWT_SECRET || 'super-secret-key-change-in-production',
+  sign: {
+    expiresIn: '86400',
+  },
 })
 
 app.get('/', () => {
