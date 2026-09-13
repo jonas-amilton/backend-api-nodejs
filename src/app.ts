@@ -4,6 +4,7 @@ import { videoRoutes } from './http/routes/videos.routes'
 import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { ZodError } from 'zod'
 import fastifyJwt from '@fastify/jwt'
+import { InvalidCredentialsError } from './errors/invalid-credentials-error'
 
 export const app = fastify({
   logger: process.env.NODE_ENV !== 'test',
@@ -40,6 +41,10 @@ app.setErrorHandler((error: FastifyError, _request, reply) => {
 
   if (error instanceof ResourceNotFoundError) {
     return reply.status(404).send({ message: error.message })
+  }
+
+  if (error instanceof InvalidCredentialsError) {
+    return reply.status(400).send({ message: error.message })
   }
 
   if (process.env.NODE_ENV !== 'production') {
