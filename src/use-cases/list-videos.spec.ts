@@ -45,8 +45,6 @@ describe('Update Video Use Case', () => {
     const videos = await sut.execute('Node.js')
 
     expect(videos).toHaveLength(1)
-    expect(videos[0]).toEqual(
-      expect.objectContaining({ title: 'Node.js Course' }),
-    )
+    expect(videos[0]).toEqual(expect.objectContaining({ title: 'Node.js Course' }))
   })
 })

@@ -33,9 +33,7 @@ export class InMemoryVideosRepository implements VideosRepository {
 
   async list(search?: string): Promise<Video[]> {
     if (search) {
-      return this.items.filter((i) =>
-        i.title.toLowerCase().includes(search.toLowerCase()),
-      )
+      return this.items.filter((i) => i.title.toLowerCase().includes(search.toLowerCase()))
     }
 
     return this.items
