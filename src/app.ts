@@ -6,10 +6,14 @@ import { ZodError } from 'zod'
 import fastifyJwt from '@fastify/jwt'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
 import { sessionsRoutes } from './http/routes/sessions-routes'
+import fastifyCookie from '@fastify/cookie'
+import { userRoutes } from './http/routes/user-routes'
 
 export const app = fastify({
   logger: process.env.NODE_ENV !== 'test',
 })
+
+app.register(fastifyCookie)
 
 app.register(cors, {
   origin: true,
@@ -17,6 +21,10 @@ app.register(cors, {
 
 app.register(fastifyJwt, {
   secret: process.env.JWT_SECRET || 'super-secret-key-change-in-production',
+  cookie: {
+    cookieName: 'refreshToken',
+    signed: false,
+  },
   sign: {
     expiresIn: '86400',
   },
@@ -32,6 +40,7 @@ app.get('/health', async () => {
 
 app.register(videoRoutes, { prefix: '/api/v1' })
 app.register(sessionsRoutes, { prefix: '/api/v1' })
+app.register(userRoutes, { prefix: '/api/v1' })
 
 app.setErrorHandler((error: FastifyError, _request, reply) => {
   if (error instanceof ZodError) {
