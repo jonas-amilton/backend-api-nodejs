@@ -11,6 +11,7 @@ const authenticateBodySchema = z.object({
 
 export class SessionsController {
   private usersRepository: PrismaUsersRepository
+  private readonly MAX_AGE = 60 * 60 * 24 * 7
 
   constructor() {
     this.usersRepository = new PrismaUsersRepository()
@@ -38,7 +39,28 @@ export class SessionsController {
         },
       )
 
-      return reply.status(200).send({ token })
+      const refreshToken = await reply.jwtSign(
+        {
+          role: user.role,
+        },
+        {
+          sign: {
+            sub: user.id,
+            expiresIn: '7d',
+          },
+        },
+      )
+
+      return reply
+        .setCookie('refreshToken', refreshToken, {
+          path: '/',
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          httpOnly: true,
+          maxAge: this.MAX_AGE,
+        })
+        .status(200)
+        .send({ token })
     } catch (error) {
       if (error instanceof InvalidCredentialsError) {
         return reply.status(400).send({ message: error.message })
@@ -46,5 +68,55 @@ export class SessionsController {
 
       throw error
     }
+  }
+
+  async refresh(request: FastifyRequest, reply: FastifyReply) {
+    await request.jwtVerify({ onlyCookie: true })
+
+    const { role } = request.user
+    const userId = request.user.sub
+
+    const token = await reply.jwtSign(
+      { role },
+      {
+        sign: {
+          sub: userId,
+          expiresIn: '15m',
+        },
+      },
+    )
+
+    const refreshToken = await reply.jwtSign(
+      { role },
+      {
+        sign: {
+          sub: userId,
+          expiresIn: '7d',
+        },
+      },
+    )
+
+    return reply
+      .setCookie('refreshToken', refreshToken, {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        httpOnly: true,
+        maxAge: this.MAX_AGE,
+      })
+      .status(200)
+      .send({ token })
+  }
+
+  async logout(_request: FastifyRequest, reply: FastifyReply) {
+    return reply
+      .clearCookie('refreshToken', {
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        httpOnly: true,
+      })
+      .status(200)
+      .send({ message: 'Logged out successfully.' })
   }
 }
