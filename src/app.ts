@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from './errors/resource-not-found-error'
 import { ZodError } from 'zod'
 import fastifyJwt from '@fastify/jwt'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
+import { sessionsRoutes } from './http/routes/sessions-routes'
 
 export const app = fastify({
   logger: process.env.NODE_ENV !== 'test',
@@ -30,6 +31,7 @@ app.get('/health', async () => {
 })
 
 app.register(videoRoutes, { prefix: '/api/v1' })
+app.register(sessionsRoutes, { prefix: '/api/v1' })
 
 app.setErrorHandler((error: FastifyError, _request, reply) => {
   if (error instanceof ZodError) {
