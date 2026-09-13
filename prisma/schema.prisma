@@ -27,7 +27,7 @@ model User {
   email         String   @unique
   password_hash String
   role          Role     @default(USER)
-  created_at    DateTime @default(now())
+  createdAt    DateTime @default(now()) @map("created_at")
 
   @@map("users")
 }
